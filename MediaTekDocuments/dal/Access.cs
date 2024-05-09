@@ -36,6 +36,13 @@ namespace MediaTekDocuments.dal
         private const string POST = "POST";
         /// <summary>
         /// méthode HTTP pour update
+        /// 
+        private const string PUT = "PUT";
+        /// <summary>
+        /// méthode HTTP pour update
+        /// 
+        private const string DELETE = "DELETE";
+
 
         /// <summary>
         /// Méthode privée pour créer un singleton
@@ -129,6 +136,15 @@ namespace MediaTekDocuments.dal
             return lesRevues;
         }
 
+        /// <summary>
+        /// Retourne tous les suivis à partir de la BDD
+        /// </summary>
+        /// <returns>Liste d'objets Revue</returns>
+        public List<Suivi> GetAllSuivis()
+        {
+            List<Suivi> lesSuivis = TraitementRecup<Suivi>(GET, "suivi");
+            return lesSuivis;
+        }
 
         /// <summary>
         /// Retourne les exemplaires d'une revue
@@ -160,6 +176,65 @@ namespace MediaTekDocuments.dal
                 Console.WriteLine(ex.Message);
             }
             return false; 
+        }
+
+        /// <summary>
+        /// Retourne les commandes d'un document
+        /// </summary>
+        /// <param name="idDocument">id du document concernée</param>
+        /// <returns>Liste d'objets CommandeDocument</returns>
+        public List<CommandeDocument> GetCmdLivre(string idDocument)
+        {
+            String jsonIdDocument = convertToJson("id", idDocument);
+            List<CommandeDocument> lesCommandesDocument = TraitementRecup<CommandeDocument>(GET, "commandedocument/" + jsonIdDocument);
+            return lesCommandesDocument;
+        }
+
+
+        /// <summary>
+        /// ecriture d'une commande de livre en base de données
+        /// </summary>
+        /// <param name="commandeLivre">commande à insérer</param>
+        /// <returns>true si l'insertion a pu se faire (retour != null)</returns>
+        public bool CreerCommandeLivre(Commande commandeLivre)
+        {
+            String jsonCreerCommande = JsonConvert.SerializeObject(commandeLivre, new CustomDateTimeConverter());
+            Console.WriteLine("jsonCreerCommande " + jsonCreerCommande);
+            try
+            {
+                // récupération soit d'une liste vide (requête ok) soit de null (erreur)
+                List<Commande> liste = TraitementRecup<Commande>(POST, "commande/" + jsonCreerCommande);
+                return (liste != null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+
+        /// <summary>
+        /// ecriture en json d'une commande
+        /// </summary>
+        /// <param name="commandeDocument">commande à insérer</param>
+        /// <returns>true si l'insertion a pu se faire (retour != null)</returns>
+
+        public bool CreerCommandeDocument(CommandeDocument commandeDocument)
+        {
+            String jsonCreerCommandeDocument = JsonConvert.SerializeObject(commandeDocument, new CustomDateTimeConverter());
+            try
+            {
+                Console.WriteLine(uriApi + "commandedocument/" + jsonCreerCommandeDocument);
+                List <CommandeDocument> liste = TraitementRecup<CommandeDocument>(POST, "commandedocument/" + jsonCreerCommandeDocument);
+                return (liste != null);
+            }
+            catch (Exception ex)
+            {
+                // Gérer l'exception
+                Console.WriteLine("Une erreur s'est produite lors de la création de la commande document : " + ex.Message);
+                return false;
+            }
         }
 
         /// <summary>
@@ -241,5 +316,44 @@ namespace MediaTekDocuments.dal
             }
         }
 
+        /// <summary>
+        /// Modification de l'étape de suivi de commande
+        /// </summary>
+        public bool ModifierSuiviCmdDoc(string id, int nbExemplaire, string idLivreDvd, string idSuivi)
+        {
+            String jsonModifierSuiviCmdDoc = "{ \"id\" : \"" + id + "\", \"nbExemplaire\" :\"" + nbExemplaire + "\", \"idLivreDvd\" : \"" + idLivreDvd + "\", \"idSuivi\" : \"" + idSuivi + "\"}";
+            try
+            {
+                List<CommandeDocument> liste = TraitementRecup<CommandeDocument>(PUT, "commandedocument/" + id + "/" + jsonModifierSuiviCmdDoc);
+                return (liste != null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Une erreur s'est produite lors de la modification du suivi de la commande document : " + ex.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Suprimer une commande
+        /// </summary>
+        public bool SupprimerCmdDoc(CommandeDocument commandeDocument) {
+            // Construction de l'objet JSON pour la commande document à supprimer
+            string jsonSupprimerCmdDoc = JsonConvert.SerializeObject(commandeDocument);
+
+            try
+            {
+                // Envoyer les données JSON pour la suppression de la commande document
+                List<CommandeDocument> liste = TraitementRecup<CommandeDocument>(DELETE, "commandedocument/" + commandeDocument.Id + "/" + jsonSupprimerCmdDoc);
+        
+                // Vérifier si la suppression a réussi en vérifiant si la liste retournée est null
+                return (liste != null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Une erreur s'est produite lors de la suppression de la commande document : " + ex.Message);
+                return false;
+            }
+        }
     }
 }
