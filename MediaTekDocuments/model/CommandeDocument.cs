@@ -11,16 +11,14 @@ namespace MediaTekDocuments.model
 
         public int NbExemplaires { get; set; }
         public string IdLivreDvd { get; set; }
-        public string IdSuivi { get; set; }
         public string EtapeSuivi { get; set; }
 
-        public CommandeDocument(string id, DateTime dateCmd, double montant, int nbExemplaires, string idSuivi, string idLivreDvd, string etapeSuivi)
+        public CommandeDocument(string id, DateTime dateCmd, double montant, int nbExemplaires, string idLivreDvd, string etapeSuivi)
             : base(id, montant, dateCmd)
         {
             this.IdLivreDvd = idLivreDvd;
             this.NbExemplaires = nbExemplaires;
             this.EtapeSuivi = etapeSuivi;
-            this.IdSuivi = idSuivi;
         }
     }
 }

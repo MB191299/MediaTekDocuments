@@ -225,8 +225,8 @@ namespace MediaTekDocuments.dal
             String jsonCreerCommandeDocument = JsonConvert.SerializeObject(commandeDocument, new CustomDateTimeConverter());
             try
             {
-                Console.WriteLine(uriApi + "commandedocument/" + jsonCreerCommandeDocument);
-                List <CommandeDocument> liste = TraitementRecup<CommandeDocument>(POST, "commandedocument/" + jsonCreerCommandeDocument);
+                Console.WriteLine(uriApi + "lacommandedocument/" + jsonCreerCommandeDocument);
+                List <CommandeDocument> liste = TraitementRecup<CommandeDocument>(POST, "lacommandedocument/" + jsonCreerCommandeDocument);
                 return (liste != null);
             }
             catch (Exception ex)

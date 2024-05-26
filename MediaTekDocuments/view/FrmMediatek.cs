@@ -1447,6 +1447,12 @@ namespace MediaTekDocuments.view
             RemplirListeCommande(sortedList);
         }
 
+
+        /// <summary>
+        /// Gestionnaire d'événement pour le clic sur le bouton d'enregistrement d'une commande.
+        /// </summary>
+        /// <param name="sender">L'objet qui a déclenché l'événement.</param>
+        /// <param name="e">Les arguments de l'événement.</param>
         private void btnEnregistrer_Click(object sender, EventArgs e)
         {
             if (!txtIdCommande.Text.Equals(""))

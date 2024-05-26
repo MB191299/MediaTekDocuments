@@ -116,11 +116,21 @@ namespace MediaTekDocuments.controller
             return access.CreerExemplaire(exemplaire);
         }
 
+        /// <summary>
+        /// Crée un exemplaire d'une commande de document dans la bdd
+        /// </summary>
+        /// <param name="exemplaire">L'objet Exemplaire concerné</param>
+        /// <returns>True si la création a pu se faire</returns>
         public bool CreerCommandeDocument(CommandeDocument commandeDocument)
         {
             return access.CreerCommandeDocument(commandeDocument);
         }
 
+        /// <summary>
+        /// Modifie le suivi d'une commande dans la bdd
+        /// </summary>
+        /// <param name="exemplaire">L'objet Exemplaire concerné</param>
+        /// <returns>True si la création a pu se faire</returns>
         public bool ModifierSuiviCmdDoc (string id, int nbExemplaire, string idLivreDvd, string idSuivi)
         {
             return access.ModifierSuiviCmdDoc(id, nbExemplaire, idLivreDvd, idSuivi);
