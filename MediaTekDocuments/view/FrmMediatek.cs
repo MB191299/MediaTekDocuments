@@ -1398,10 +1398,11 @@ namespace MediaTekDocuments.view
         /// <param name="etapeSuivi">étape du suivi de la commande d'un document</param>
         private void RemplirCbxEtapeSuiviCmd(string etapeSuivi)
         {
+
             cbxEtapeSuiviCommande.Items.Clear();
             if (etapeSuivi == " ")
             {
-                cbxEtapeSuiviCommande.Text = " ";
+                cbxEtapeSuiviCommande.Text = "";
                 lblEtapeSuivi.Text = "- étape -";
             }
             else if (etapeSuivi == "livrée")
@@ -1560,54 +1561,53 @@ namespace MediaTekDocuments.view
         {
             DataGridViewRow row = dgvListeCommandes.Rows[e.RowIndex];
             string id = row.Cells["Id"].Value.ToString();
+            string idDocument = row.Cells["IdLivreDvd"].Value.ToString();
             DateTime dateCommande = (DateTime)row.Cells["dateCommande"].Value;
             double montant = double.Parse(row.Cells["Montant"].Value.ToString());
             int nbExemplaire = int.Parse(row.Cells["NbExemplaire"].Value.ToString());
             string etape = row.Cells["EtapeSuivi"].Value.ToString();
             txtIdCommande.Text = id;
+            txbIdDocument.Text = idDocument;
             txbNbExemplaires.Text = nbExemplaire.ToString();
             txbMontant.Text = montant.ToString();
             dtpCommande.Value = dateCommande;
             lblEtapeSuivi.Text = etape;
             //donner l'etape à mettre dans le cbx
-            if (GetIdSuivi(etape) == "00003")
-            {
-                cbxEtapeSuiviCommande.Enabled = false;
-                btnModifierEtape.Enabled = false;
-            }
-            else
-            {
-                cbxEtapeSuiviCommande.Enabled = true;
-                btnModifierEtape.Enabled = true;
-            }
+            RemplirCbxEtapeSuiviCmd(etape);
         }
 
         private void btnSupprimerCommande_Click(object sender, EventArgs e)
         {
-            {
                 if (dgvListeCommandes.SelectedRows.Count > 0)
                 {
-                    CommandeDocument commandedocument = (CommandeDocument)bdgCmdListe.List[bdgCmdListe.Position];
-                    if (commandedocument.EtapeSuivi == "en cours" || commandedocument.EtapeSuivi == "relancée")
+                    // Récupérer la ligne sélectionnée
+                    DataGridViewRow selectedRow = dgvListeCommandes.SelectedRows[0];
+
+                    // Récupérer l'objet CommandeDocument correspondant à la ligne sélectionnée
+                    CommandeDocument commandedocument = (CommandeDocument)selectedRow.DataBoundItem;
+
+                    // Vérifier si l'objet est null
+                    if (commandedocument != null)
                     {
-                        if (MessageBox.Show("Voulez-vous vraiment supprimer la commande " + commandedocument.Id + " ?", "Confirmation de suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        if (commandedocument.EtapeSuivi == "en cours" || commandedocument.EtapeSuivi == "relancée")
                         {
-                            controller.SupprimerCmdDoc(commandedocument);
-                            AfficheReceptionCmdLivre();
+                            if (MessageBox.Show("Voulez-vous vraiment supprimer la commande " + commandedocument.Id + " ?", "Confirmation de suppression", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            {
+                                controller.SupprimerCmdDoc(commandedocument);
+                                AfficheReceptionCmdLivre();
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("La commande sélectionnée a été livrée, elle ne peut pas être supprimée.", "Information");
                         }
                     }
                     else
                     {
-                        MessageBox.Show("La commande sélectionnée a été livrée, elle ne peut pas être supprimée.", "Information");
+                        MessageBox.Show("Une ligne doit être sélectionnée.", "Information");
                     }
                 }
-                else
-                {
-                    MessageBox.Show("Une ligne doit être sélectionnée.", "Information");
-                }
-            }
         }
         #endregion
-
     }
 }

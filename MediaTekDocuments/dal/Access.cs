@@ -353,13 +353,13 @@ namespace MediaTekDocuments.dal
         /// </summary>
         public bool SupprimerCmdDoc(CommandeDocument commandeDocument) {
             // Construction de l'objet JSON pour la commande document à supprimer
-            string jsonSupprimerCmdDoc = JsonConvert.SerializeObject(commandeDocument);
+            String jsonSupprimerCmdDoc = JsonConvert.SerializeObject(commandeDocument, new CustomDateTimeConverter());
 
             try
             {
-                // Envoyer les données JSON pour la suppression de la commande document
-                List<CommandeDocument> liste = TraitementRecup<CommandeDocument>(DELETE, "commandedocument/" + commandeDocument.Id + "/" + jsonSupprimerCmdDoc);
-        
+                Console.WriteLine(uriApi + "lacommandedocument/" + jsonSupprimerCmdDoc);
+                List<CommandeDocument> liste = TraitementRecup<CommandeDocument>(DELETE, "lacommandedocument/" + jsonSupprimerCmdDoc);
+                Console.WriteLine("Succes");
                 // Vérifier si la suppression a réussi en vérifiant si la liste retournée est null
                 return (liste != null);
             }

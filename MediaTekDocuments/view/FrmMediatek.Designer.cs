@@ -225,6 +225,7 @@ namespace MediaTekDocuments.view
             this.btnCmdLivresNumRecherche = new System.Windows.Forms.Button();
             this.txbCmdLivresNumRecherche = new System.Windows.Forms.TextBox();
             this.label60 = new System.Windows.Forms.Label();
+            this.cmb = new System.Windows.Forms.ComboBox();
             this.tabOngletsApplication.SuspendLayout();
             this.tabLivres.SuspendLayout();
             this.grpLivresInfos.SuspendLayout();
@@ -1280,6 +1281,7 @@ namespace MediaTekDocuments.view
             // 
             // grpRevuesRecherche
             // 
+            this.grpRevuesRecherche.Controls.Add(this.cmb);
             this.grpRevuesRecherche.Controls.Add(this.btnRevuesAnnulRayons);
             this.grpRevuesRecherche.Controls.Add(this.btnRevuesAnnulPublics);
             this.grpRevuesRecherche.Controls.Add(this.btnRevuesNumRecherche);
@@ -2358,6 +2360,14 @@ namespace MediaTekDocuments.view
             this.label60.TabIndex = 14;
             this.label60.Text = "Saisir un numéro de document :";
             // 
+            // cmb
+            // 
+            this.cmb.FormattingEnabled = true;
+            this.cmb.Location = new System.Drawing.Point(103, 100);
+            this.cmb.Name = "cmb";
+            this.cmb.Size = new System.Drawing.Size(121, 21);
+            this.cmb.TabIndex = 18;
+            // 
             // FrmMediatek
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2611,6 +2621,7 @@ namespace MediaTekDocuments.view
         private System.Windows.Forms.Label label75;
         private System.Windows.Forms.TextBox txtIdCommande;
         private System.Windows.Forms.Label label78;
+        private System.Windows.Forms.ComboBox cmb;
     }
 }
 
