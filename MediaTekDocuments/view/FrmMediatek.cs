@@ -1247,19 +1247,24 @@ namespace MediaTekDocuments.view
         private readonly BindingSource bdgCmdListe = new BindingSource();
         private List<CommandeDocument> lesCommandesDocument = new List<CommandeDocument>();
 
-
         /// <summary>
-        /// Ouverture de l'onglet Livres : 
-        /// appel des méthodes pour remplir le datagrid des livre
+        /// Ouverture de l'onglet Commande : 
+        /// récupération de toutes les commandes
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void tabCommandeLivre_Enter(object sender, EventArgs e)
         {
             listeLivres = controller.GetAllLivres();
-            RemplirCbxEtapeSuiviCmd(" ");
+            lesCommandesDocument = controller.GetAllCmdLivre();
+            RemplirListeToutesCommandes();
         }
 
+        /// <summary>
+        /// bouton qui recherche les livres associés à une commande
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnCmdLivresNumRecherche_Click(object sender, EventArgs e)
         {
             if (!txbCmdLivresNumRecherche.Text.Equals(""))
@@ -1267,21 +1272,31 @@ namespace MediaTekDocuments.view
                 Livre livre = listeLivres.Find(x => x.Id.Equals(txbCmdLivresNumRecherche.Text));
                 if (livre != null)
                 {
-                    List<Livre> livres = new List<Livre>() { livre };
                     AfficheLivresCmdInfos(livre);
-                    AfficheReceptionCmdLivre();
                 }
                 else
                 {
                     MessageBox.Show("numéro introuvable");
                     VideLivresCmdInfos();
                 }
+                CommandeDocument commandeDocument = lesCommandesDocument.Find(x => x.IdLivreDvd.Equals(txbCmdLivresNumRecherche.Text));
+                if (commandeDocument != null)
+                {
+                    AfficheReceptionCmdLivre();
+                }
+                else
+                {
+                    MessageBox.Show("commande introuvable");
+                }
             }
             else
             {
                 VideLivresCmdInfos();
+                MessageBox.Show("numéro de document obligatoire", "Information");
             }
         }
+            
+        
 
         /// <summary>
         /// Affichage des informations du livre sélectionné
@@ -1334,42 +1349,46 @@ namespace MediaTekDocuments.view
             txbCmdLivresNumRecherche.Text = "";
         }
 
+
+
         /// <summary>
-        /// Remplit le dategrid des exemplaires avec la liste reçue en paramètre
+        /// Remplit le dategrid avec la liste reçue en paramètre
         /// </summary>
-        /// <param name="exemplaires">liste d'exemplaires</param>
-        private void RemplirListeCommande(List<CommandeDocument> lesCommandesDocument)
+        /// <param name="lesCommandesDocument">liste de commandes</param>
+        private void RemplirListeCommande(List<CommandeDocument> CommandesDocument)
         {
-            if (lesCommandesDocument != null)
-            {
-                bdgLivresCmdListe.DataSource = lesCommandesDocument;
+                bdgLivresCmdListe.DataSource = CommandesDocument;
                 dgvListeCommandes.DataSource = bdgLivresCmdListe;
                 dgvListeCommandes.Columns["id"].Visible = false;
                 dgvListeCommandes.Columns["idLivreDvd"].Visible = false;
-                dgvListeCommandes.Columns["idSuivi"].Visible = false;
-                dgvListeCommandes.Columns["dateCmd"].DisplayIndex = 0;
-                dgvListeCommandes.Columns["nbExemplaires"].DisplayIndex = 1;
-                dgvListeCommandes.Columns["montant"].DisplayIndex = 2;
-                dgvListeCommandes.Columns["idSuivi"].DisplayIndex = 3;
+                dgvListeCommandes.Columns["etapeSuivi"].DisplayIndex = 5;
+                dgvListeCommandes.Columns["nbExemplaire"].DisplayIndex = 0;
+                dgvListeCommandes.Columns["dateCommande"].DisplayIndex = 1;
+                dgvListeCommandes.Columns["montant"].DisplayIndex = 3;
+                dgvListeCommandes.Columns[0].HeaderCell.Value = "Nb d'exemplaires";
+                dgvListeCommandes.Columns[4].HeaderCell.Value = "Date de commande";
+                dgvListeCommandes.Columns[2].HeaderCell.Value = "Suivi";
                 dgvListeCommandes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-                dgvListeCommandes.Columns[5].HeaderCell.Value = "Suivi";
-                dgvListeCommandes.Columns[1].HeaderCell.Value = "Nombre d'exemplaires";
-                dgvListeCommandes.Columns[3].HeaderCell.Value = "Montant";
-                dgvListeCommandes.Columns[0].HeaderCell.Value = "Date de commande";
-            }
-            else
-            {
-                bdgLivresCmdListe.DataSource = null;
-            }
         }
+
+        /// <summary>
+        /// Remplit le dategrid avec la liste reçue en paramètre
+        /// </summary>
+        /// <param name="lesCommandesDocument">liste de commandes</param>
+        private void RemplirListeToutesCommandes()
+        {
+            RemplirListeCommande(lesCommandesDocument);
+        }
+
+
 
         /// <summary>
         /// Récupère et affiche les commandes d'un livre
         /// </summary>
-        private void AfficheReceptionCmdLivre()
+            private void AfficheReceptionCmdLivre()
         {
-            string idDocuement = txbNumCmdLivre.Text;
-            lesCommandesDocument = controller.GetCmdLivre(idDocuement);
+            string idDocument = txbCmdLivresNumRecherche.Text;
+            lesCommandesDocument = controller.GetCmdLivre(idDocument);
             RemplirListeCommande(lesCommandesDocument);
         }
 
@@ -1432,17 +1451,17 @@ namespace MediaTekDocuments.view
             switch (titreColonne)
             {
                 case "Date de commande":
-                    sortedList = lesCommandesDocument.OrderBy(o => o.DateCmd).Reverse().ToList();
+                    sortedList = lesCommandesDocument.OrderBy(o => o.DateCommande).Reverse().ToList();
                     break;
                 case "Montant":
                     sortedList = lesCommandesDocument.OrderBy(o => o.Montant).ToList();
                     break;
                 case "Nombre d'exemplaires":
-                    sortedList = lesCommandesDocument.OrderBy(o => o.NbExemplaires).ToList();
+                    sortedList = lesCommandesDocument.OrderBy(o => o.NbExemplaire).ToList();
                     break;
-                case "Suivi":
-                    sortedList = lesCommandesDocument.OrderBy(o => o.EtapeSuivi).ToList();
-                    break;
+                //case "Suivi":
+                //    sortedList = lesCommandesDocument.OrderBy(o => o.EtapeSuivi).ToList();
+                //    break;
             }
             RemplirListeCommande(sortedList);
         }
@@ -1464,13 +1483,13 @@ namespace MediaTekDocuments.view
                     double montant = double.Parse(txbMontant.Text);
                     DateTime dateCommande = dtpCommande.Value;
                     string idLivreDvd = txbIdDocument.Text;
-                    string idSuivi = "0000";
                     string etapeSuivi = "en cours";
-                    CommandeDocument commandeDocument = new CommandeDocument(id, dateCommande, montant, nbExemplaire, idSuivi, idLivreDvd, etapeSuivi);
-                    var idCommandeLivreExistante = controller.GetCmdLivre(id);
-                    var idCommandeLivreNonExistante = !idCommandeLivreExistante.Any();
+                    CommandeDocument commandeDocument = new CommandeDocument(id, dateCommande, montant, nbExemplaire, idLivreDvd, etapeSuivi);
+                    //var idCommandeLivreExistante = controller.GetCmdLivre(id);
+                    //var idCommandeLivreNonExistante = !idCommandeLivreExistante.Any();
                     if (controller.CreerCommandeDocument(commandeDocument))
                     {
+                        MessageBox.Show("succes");
                         AfficheReceptionCmdLivre();
                     }
                     else
@@ -1511,11 +1530,11 @@ namespace MediaTekDocuments.view
                     string idLivreDvd = txbCmdLivresNumRecherche.Text;
                     string idSuivi = GetIdSuivi(cbxEtapeSuiviCommande.Text);
                     string etape = cbxEtapeSuiviCommande.SelectedItem.ToString();
-                    CommandeDocument commandedocument = new CommandeDocument(id, dateCommande, montant, nbExemplaire, idSuivi, idLivreDvd, etape);
+                    CommandeDocument commandedocument = new CommandeDocument(id, dateCommande, montant, nbExemplaire, idLivreDvd, etape);
                     if (MessageBox.Show("Voulez-vous modifier le suivi de la commande " + commandedocument.Id + " en " + etape + " ?", "Confirmation", MessageBoxButtons.YesNo) ==
                     DialogResult.Yes)
                     {
-                        controller.ModifierSuiviCmdDoc(commandedocument.Id, commandedocument.NbExemplaires, commandedocument.IdLivreDvd, commandedocument.IdSuivi);
+                        controller.ModifierSuiviCmdDoc(commandedocument.Id, commandedocument.NbExemplaire, commandedocument.IdLivreDvd);
                         MessageBox.Show("L'étape de suivi de la commande " + id + " a bien été modifiée.", "Information");
                         AfficheReceptionCmdLivre();
                     }
@@ -1589,5 +1608,6 @@ namespace MediaTekDocuments.view
             }
         }
         #endregion
+
     }
 }

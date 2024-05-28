@@ -107,6 +107,15 @@ namespace MediaTekDocuments.controller
         }
 
         /// <summary>
+        /// récupère toutes les commandes
+        /// </summary>
+        /// <returns>Liste d'objets Commande</returns>
+        public List<CommandeDocument> GetAllCmdLivre()
+        {
+            return access.GetAllCmdLivre();
+        }
+
+        /// <summary>
         /// Crée un exemplaire d'une revue dans la bdd
         /// </summary>
         /// <param name="exemplaire">L'objet Exemplaire concerné</param>
@@ -117,9 +126,9 @@ namespace MediaTekDocuments.controller
         }
 
         /// <summary>
-        /// Crée un exemplaire d'une commande de document dans la bdd
+        /// Crée une commande de document dans la bdd
         /// </summary>
-        /// <param name="exemplaire">L'objet Exemplaire concerné</param>
+        /// <param name="commandeDocument">L'objet commandeDocument concerné</param>
         /// <returns>True si la création a pu se faire</returns>
         public bool CreerCommandeDocument(CommandeDocument commandeDocument)
         {
@@ -129,11 +138,10 @@ namespace MediaTekDocuments.controller
         /// <summary>
         /// Modifie le suivi d'une commande dans la bdd
         /// </summary>
-        /// <param name="exemplaire">L'objet Exemplaire concerné</param>
-        /// <returns>True si la création a pu se faire</returns>
-        public bool ModifierSuiviCmdDoc (string id, int nbExemplaire, string idLivreDvd, string idSuivi)
+        /// <returns>True si la modification a pu se faire</returns>
+        public bool ModifierSuiviCmdDoc (string id, int nbExemplaire, string idLivreDvd)
         {
-            return access.ModifierSuiviCmdDoc(id, nbExemplaire, idLivreDvd, idSuivi);
+            return access.ModifierSuiviCmdDoc(id, nbExemplaire, idLivreDvd);
         }
 
         public bool SupprimerCmdDoc(CommandeDocument commandesDocument)

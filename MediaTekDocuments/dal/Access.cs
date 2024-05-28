@@ -190,6 +190,15 @@ namespace MediaTekDocuments.dal
             return lesCommandesDocument;
         }
 
+        /// <summary>
+        /// Retourne les commandes d'un document
+        /// </summary>
+        /// <returns>Liste d'objets CommandeDocument</returns>
+        public List<CommandeDocument> GetAllCmdLivre()
+        {
+            List<CommandeDocument> lesCommandesDocument = TraitementRecup<CommandeDocument>(GET, "commandedocument");
+            return lesCommandesDocument;
+        }
 
         /// <summary>
         /// ecriture d'une commande de livre en base de données
@@ -227,6 +236,7 @@ namespace MediaTekDocuments.dal
             {
                 Console.WriteLine(uriApi + "lacommandedocument/" + jsonCreerCommandeDocument);
                 List <CommandeDocument> liste = TraitementRecup<CommandeDocument>(POST, "lacommandedocument/" + jsonCreerCommandeDocument);
+                Console.WriteLine("Succes");
                 return (liste != null);
             }
             catch (Exception ex)
@@ -260,6 +270,10 @@ namespace MediaTekDocuments.dal
                         String resultString = JsonConvert.SerializeObject(retour["result"]);
                         // construction de la liste d'objets à partir du retour de l'api
                         liste = JsonConvert.DeserializeObject<List<T>>(resultString, new CustomBooleanJsonConverter());
+                    }
+                    else
+                    {
+                        Console.WriteLine("ok");
                     }
                 }
                 else
@@ -319,9 +333,9 @@ namespace MediaTekDocuments.dal
         /// <summary>
         /// Modification de l'étape de suivi de commande
         /// </summary>
-        public bool ModifierSuiviCmdDoc(string id, int nbExemplaire, string idLivreDvd, string idSuivi)
+        public bool ModifierSuiviCmdDoc(string id, int nbExemplaire, string idLivreDvd)
         {
-            String jsonModifierSuiviCmdDoc = "{ \"id\" : \"" + id + "\", \"nbExemplaire\" :\"" + nbExemplaire + "\", \"idLivreDvd\" : \"" + idLivreDvd + "\", \"idSuivi\" : \"" + idSuivi + "\"}";
+            String jsonModifierSuiviCmdDoc = "{ \"id\" : \"" + id + "\", \"nbExemplaire\" :\"" + nbExemplaire + "\", \"idLivreDvd\" : \"" + idLivreDvd + "\", \"idSuivi\" : \"}";
             try
             {
                 List<CommandeDocument> liste = TraitementRecup<CommandeDocument>(PUT, "commandedocument/" + id + "/" + jsonModifierSuiviCmdDoc);

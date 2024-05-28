@@ -8,13 +8,13 @@ namespace MediaTekDocuments.model
     public class Commande
     {
         public double Montant { get; set; }
-        public DateTime DateCmd { get; set; }
+        public DateTime DateCommande { get; set; }
         public string Id { get; set; }
 
-        public Commande(string id, double montant, DateTime dateCmd)
+        public Commande(string id, double montant, DateTime dateCommande)
         {
             this.Montant = montant;
-            this.DateCmd = dateCmd;
+            this.DateCommande = dateCommande;
             this.Id = id;
         }
 
